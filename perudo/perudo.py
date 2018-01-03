@@ -105,3 +105,4 @@ class Perudo(object):
                 player_index = next_player
             if len(remaining_players) == 1:  # do we have a winner ?
                 return list_of_players[remaining_players[0]], game_history
+

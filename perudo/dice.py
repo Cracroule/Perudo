@@ -1,5 +1,6 @@
 import random
 
+
 class Dice(object):
 
     def __init__(self, nb_of_faces, seed=0):

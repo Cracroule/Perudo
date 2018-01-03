@@ -1,6 +1,38 @@
 #from perudo.dice import DiceFace
 
 
+def check_announce_consistency(announce, prev_announce, is_paradisio):
+    if not prev_announce:
+        assert isinstance(announce, RaiseAnnounce)
+    else:
+        if isinstance(announce, RaiseAnnounce):
+            assert announce > prev_announce
+            if is_paradisio:
+                assert announce.dice_face == prev_announce.dice_face
+    if isinstance(announce, ExactAnnounce) or isinstance(announce, BluffAnnounce):
+        assert isinstance(prev_announce, RaiseAnnounce)
+
+
+# returns an announce such as returned_announce > announce (actually returns the following one)
+def get_next_raise_announce(announce, is_paradisio):
+    qty = 1
+    face = 2
+    if announce:
+        qty = announce.dice_quantity
+        face = announce.dice_face
+    if is_paradisio:
+        return RaiseAnnounce(qty+1, face)
+    if face not in (6, 1):
+        return RaiseAnnounce(qty, face + 1)
+    if face == 6:
+        if qty % 2:
+            return RaiseAnnounce(qty+1, 2)
+        else:
+            return RaiseAnnounce(int(qty / 2), 1)
+    if face == 1:
+        return RaiseAnnounce(qty * 2 + 1, 2)
+
+
 class RaiseAnnounce(object):
 
     def __init__(self, dice_quantity, dice_face):

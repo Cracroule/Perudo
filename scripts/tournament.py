@@ -1,5 +1,5 @@
 from perudo.perudo import Perudo
-from perudo.player import DummyReasonablePlayer
+from perudo.player import DummyReasonablePlayer, ProbabilisticPlayer
 
 
 def main():
@@ -7,10 +7,13 @@ def main():
     faces_per_dice = 6
     perudo = Perudo(dice_per_player, faces_per_dice)
 
-    players = [DummyReasonablePlayer(s) for s in ["Dummy1", "Dummy2", "Dummy3", "Dummy4"]]
+    players = [DummyReasonablePlayer(s) for s in ["Dummy1", "Dummy2", "Dummy3"]]
+    players.append(ProbabilisticPlayer('Einstein'))
 
     nb_of_games = 1000
-    games_won = {"Dummy1": 0, "Dummy2": 0, "Dummy3": 0, "Dummy4": 0}
+    games_won = dict()
+    for player in players:
+        games_won[player.name] = 0
     for i in range(nb_of_games):
         winner, game_history = perudo.play_game(players)
         games_won[winner.name] += 1
