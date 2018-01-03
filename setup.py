@@ -10,6 +10,6 @@ setup(
     license='rpil',
     package_dir={},
     packages=['perudo'],
-    scripts=['scripts/validation.py'],
+    scripts=['scripts/tournament.py'],
     install_requires=[]
 )

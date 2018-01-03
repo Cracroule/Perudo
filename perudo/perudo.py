@@ -95,12 +95,13 @@ class Perudo(object):
                     delta = -1
             elif isinstance(announce, ExactAnnounce):
                 delta = 1 if actual_dices_count == challenged_quantity else -1
+
+            next_player = remaining_players[(remaining_players.index(player_index) + 1) % len(remaining_players)]
             is_paradisio_round = self.update_remaining_dice(delta, player_index, remaining_dices, paradisio_unmet)
 
             game_history.append((round_history, rolled_dices))  # save history
             remaining_players = [i for i in range(len(remaining_dices)) if remaining_dices[i] > 0]
             if player_index not in remaining_players:  # dead player ?
-                player_index = remaining_players[
-                        (remaining_players.index(announce_player_i) + 1) % len(remaining_players)]
+                player_index = next_player
             if len(remaining_players) == 1:  # do we have a winner ?
                 return list_of_players[remaining_players[0]], game_history

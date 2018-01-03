@@ -47,7 +47,10 @@ class DummyReasonablePlayer(object):
             dangerous_quantity = my_max_quantity
 
         if announced_quantity >= dangerous_quantity:
-            decision = self.randgen.choice([1, 2, 2, 3, 3])
+            if prev_announce:
+                decision = self.randgen.choice([1, 2, 2, 3, 3])
+            else:
+                decision = 3
             if decision == 1:
                 return ExactAnnounce(prev_announce)
             elif decision == 2:
