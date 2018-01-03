@@ -24,7 +24,7 @@ class Perudo(object):
             for dice in player_dices:
                 if dice == challenged_dice_face:
                     d += 1
-                if challenged_dice_face != 1 and dice == 1 and not is_paradisio_round:
+                if dice == 1 and challenged_dice_face != 1 and not is_paradisio_round:
                     d += 1
         return d
 
