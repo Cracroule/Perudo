@@ -5,30 +5,6 @@ from perudo.player import DummyReasonablePlayer, ProbabilisticPlayer
 from perudo.announce import BluffAnnounce, ExactAnnounce, RaiseAnnounce, check_announce_consistency
 
 
-def test_play_few_turn_dummy_player():
-    dummy_reasonable_player = DummyReasonablePlayer("I am Dummy")
-    player = dummy_reasonable_player
-    my_dices = [4, 2, 5, 6, 1]  # whatever
-    nb_of_players = 4  # whatever
-    round_history = list()  # whatever
-    nb_of_remaining_dices = 20
-    is_paradisio = False
-    prev_announce, announce = None, None
-    i = 0
-    list_announces = list()
-
-    while not (isinstance(announce, BluffAnnounce) or isinstance(announce, ExactAnnounce) or i > 200):
-        announce = player.play_turn(my_dices, prev_announce, is_paradisio, nb_of_players,
-                                    nb_of_remaining_dices, round_history)
-        list_announces.append(announce)
-        i += 1
-        if prev_announce and isinstance(announce, RaiseAnnounce):
-            assert prev_announce < announce
-            if is_paradisio:
-                assert prev_announce.dice_face == announce.dice_face
-        prev_announce = announce
-
-
 # when creating a new player, just add it on the below method to validate it
 @pytest.fixture()
 def all_kind_of_players():
@@ -68,7 +44,7 @@ def test_first_plays(all_kind_of_players, all_kind_of_initial_situations):
 
             i = 0
             announce = None
-            while not (isinstance(announce, BluffAnnounce) or isinstance(announce, ExactAnnounce) or i > 5):
+            while not (isinstance(announce, BluffAnnounce) or isinstance(announce, ExactAnnounce) or i > 10):
                 announce = player.play_turn(my_dices, prev_announce, is_paradisio, nb_of_players,
                                             nb_of_remaining_dices, round_history)
                 check_announce_consistency(announce, prev_announce, is_paradisio)
