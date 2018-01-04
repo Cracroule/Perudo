@@ -24,10 +24,10 @@ def prev_living_player_index(remaining_dices, player_index):
 
 class Perudo(object):
 
-    def __init__(self, dice_per_player=5, faces_per_dice=6):
+    def __init__(self, dice_per_player=5, faces_per_dice=6, dice_seed=0):
         self.dice_per_player = dice_per_player
         self.faces_per_dice = faces_per_dice
-        self.dice = Dice(faces_per_dice)
+        self.dice = Dice(faces_per_dice, dice_seed)
 
     # fill dice_draws list with obtained values rolling dices for each player
     def roll_all_dices(self, remaining_dice):
@@ -49,6 +49,9 @@ class Perudo(object):
         if len(set([e.name for e in list_of_players])) != len([e.name for e in list_of_players]):
             raise NameError("Attempt to start a game with players with same name ! please rename a player")
 
+        for player in list_of_players:
+            player.notify_start_of_game([p.name for p in list_of_players], starting_player_index)
+
         player_index = starting_player_index
         remaining_dices = [self.dice_per_player] * len(list_of_players)
         paradisio_unmet = [True] * len(list_of_players)
@@ -63,6 +66,8 @@ class Perudo(object):
             announce, announce_player_i, round_history = res_round
             actual_dices_count = self.count_dices(rolled_dices, announce.challenged_announce.dice_face,
                                                   is_paradisio_round)
+            game_history.append((round_history, rolled_dices, is_paradisio_round))  # save history
+
             # apply reward
             player_index = announce_player_i
             if isinstance(announce, BluffAnnounce):
@@ -74,12 +79,12 @@ class Perudo(object):
             else:  # so isinstance(announce, ExactAnnounce) is True
                 correct_challenge = actual_dices_count == announce.challenged_announce.dice_quantity
                 delta = 1 if correct_challenge else -1
-            is_paradisio_round = self.update_remaining_dice(delta, player_index, remaining_dices, paradisio_unmet)
             for player in list_of_players:
-                player.notify_end_of_round(announce, rolled_dices, announce_player_i, correct_challenge, round_history)
+                player.notify_end_of_round(announce, rolled_dices, announce_player_i, correct_challenge, round_history,
+                                           is_paradisio_round)
+            is_paradisio_round = self.update_remaining_dice(delta, player_index, remaining_dices, paradisio_unmet)
 
-            game_history.append((round_history, rolled_dices))  # save history
-            if remaining_dices[player_index]:  # dead player ? so he does not start next turn
+            if not remaining_dices[player_index]:  # dead player ? so he does not start next turn
                 player_index = prev_living_player_index(remaining_dices, player_index)
             if next_living_player_index(remaining_dices, player_index) == player_index:
                 for player in list_of_players:

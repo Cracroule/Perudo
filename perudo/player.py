@@ -19,11 +19,14 @@ class GenericPlayer(object):
     def play_turn(self, my_dices, prev_announce, is_paradisio, remaining_dices, my_player_index, round_history):
         raise NotImplementedError("I am a f*cking Generic player, i don t know how to play")
 
+    def notify_start_of_game(self, players_names, starting_player_index):
+        pass
+
     def notify_end_of_game(self, winner_name, game_history):
         pass
 
     def notify_end_of_round(self, ending_announce, all_rolled_dices, announce_player_i,
-                            ending_announce_correctness, round_history):
+                            ending_announce_correctness, round_history, is_paradisio_round):
         pass
 
 
