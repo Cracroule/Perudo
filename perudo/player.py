@@ -4,21 +4,46 @@ from perudo.strategy import proba_nb_dices_is_k, proba_nb_dices_is_more_than_k, 
 import random
 
 
+""" A player is an object, with:
+    - a name attribute (unique !)
+    - a play_turn method (returns an announce)
+    - a notify_end_of_round method (does nothing, might be used to analyse other players)
+    - a notify_end_of_game method (does nothing, might be used to analyse other players)
+    The last two methods mights be inherited from GenericPlayer"""
+
+
+class GenericPlayer(object):
+    def __init__(self):
+        raise NotImplementedError("I am a f*cking Generic player")
+
+    def play_turn(self, my_dices, prev_announce, is_paradisio, remaining_dices, my_player_index, round_history):
+        raise NotImplementedError("I am a f*cking Generic player, i don t know how to play")
+
+    def notify_end_of_game(self, winner_name, game_history):
+        pass
+
+    def notify_end_of_round(self, ending_announce, all_rolled_dices, announce_player_i,
+                            ending_announce_correctness, round_history):
+        pass
+
+
 # computes all probabilities, choose most probable one according to its criterias
 # would be easily defeated by humans as always propose most probable issue
-class ProbabilisticPlayer(object):
+class ProbabilisticPlayer(GenericPlayer):
     def __init__(self, name, seed=0):
         self.name = name
         self.randgen = random.Random(seed)
 
-    def play_turn(self, my_dices, prev_announce, is_paradisio, nb_of_players, nb_of_remaining_dices, round_history):
+    def play_turn(self, my_dices, prev_announce, is_paradisio, remaining_dices, my_player_index, round_history):
+        nb_of_remaining_dices = sum([e for e in remaining_dices])
+        assert remaining_dices[my_player_index] == len(my_dices)
 
         p_exact, p_bluff = 0, 0
         if prev_announce:
             my_same_dices_qty = my_dices.count(prev_announce.dice_face)
             missing_qty = prev_announce.dice_quantity - my_same_dices_qty
             is_paco_or_paradisio = True if is_paradisio else prev_announce.dice_face == 1
-            if missing_qty > 0:
+            if missing_qty >= 0:
                 p_exact = proba_nb_dices_is_k(missing_qty, nb_of_remaining_dices - len(my_dices), is_paco_or_paradisio)
                 p_bluff = proba_nb_dices_is_less_than_k(missing_qty, nb_of_remaining_dices - len(my_dices),
                                                         is_paco_or_paradisio)
@@ -59,13 +84,16 @@ class ProbabilisticPlayer(object):
         return ExactAnnounce(prev_announce)
 
 
-class DummyReasonablePlayer(object):
+class DummyReasonablePlayer(GenericPlayer):
 
     def __init__(self, name, seed=0):
         self.name = name
         self.randgen = random.Random(seed)
 
-    def play_turn(self, my_dices, prev_announce, is_paradisio, nb_of_players, nb_of_remaining_dices, round_history):
+    def play_turn(self, my_dices, prev_announce, is_paradisio, remaining_dices, my_player_index, round_history):
+        nb_of_remaining_dices = sum([e for e in remaining_dices])
+        assert remaining_dices[my_player_index] == len(my_dices)
+
         if prev_announce:
             announced_quantity = prev_announce.dice_quantity
             announced_face = prev_announce.dice_face
