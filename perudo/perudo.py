@@ -47,7 +47,7 @@ class Perudo(object):
 
     def play_game(self, list_of_players, starting_player_index=0):
         if len(set([e.name for e in list_of_players])) != len([e.name for e in list_of_players]):
-            raise Exception("Attempt to start a game with players with same name ! please rename a player")
+            raise NameError("Attempt to start a game with players with same name ! please rename a player")
 
         player_index = starting_player_index
         remaining_dices = [self.dice_per_player] * len(list_of_players)
