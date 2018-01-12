@@ -55,6 +55,7 @@ class HumanPlayer(GenericPlayer):
         print('#####################################')
         print("###      %s won this game     !!! ###" % winner_name)
         print('#####################################')
+        print()
 
     def notify_end_of_round(self, ending_announce, all_rolled_dices, announce_player_i,
                             ending_announce_correctness, round_history, is_paradisio_round):
@@ -96,7 +97,6 @@ def main():
     players.append(HumanPlayer('You'))
 
     perudo.play_game(players)
-
 
 
 if __name__ == '__main__':

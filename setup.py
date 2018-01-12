@@ -1,15 +1,16 @@
 __author__ = 'rpil'
 
 from setuptools import setup, find_packages
-from distutils.core import setup
+#from distutils.core import setup
 
 setup(
-    version='0.0.0.1',
+    version='0.0.0.2',
     name='perudo',
-    description='personal project about perudo contest',
-    license='rpil',
-    package_dir={},
-    packages=['perudo'],
-    scripts=['scripts/tournament.py'],
-    install_requires=[]
+    description='Personal project about perudo ai contest',
+    # license='rpil',
+    # package_dir={},
+    # packages=['perudo'],
+    packages=find_packages(),
+    #scripts=['scripts/tournament.py'],
+    install_requires=[],
 )
