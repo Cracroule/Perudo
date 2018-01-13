@@ -67,11 +67,14 @@ class HumanPlayer(GenericPlayer):
         total_dice_qty = 0
         for i in range(len(all_rolled_dices)):
             p_dice = all_rolled_dices[i]
+            paco_str = ''
             if is_paradisio_round or ending_announce.challenged_announce.dice_face == 1:
                 called_dice_qty = p_dice.count(ending_announce.challenged_announce.dice_face)
             else:
-                called_dice_qty = p_dice.count(ending_announce.challenged_announce.dice_face) + p_dice.count(1)
-            print(self.cache['players_names'][i], ':', p_dice, ' -> contains %i' % called_dice_qty)
+                called_dice_qty = p_dice.count(ending_announce.challenged_announce.dice_face)
+                paco_qty = p_dice.count(1)
+                paco_str += '+ %i pacos =  %i' % (paco_qty, called_dice_qty + paco_qty)
+            print(self.cache['players_names'][i], ':', p_dice, ' -> contains %i' % called_dice_qty, paco_str)
             total_dice_qty += called_dice_qty
         if ending_announce_correctness:
             print('  for a total of %i, so the last challenge was correct' % total_dice_qty)
@@ -81,10 +84,11 @@ class HumanPlayer(GenericPlayer):
                 input('  %s earned a dice      (press any key to continue)' % round_history[-1][0])
         else:
             print('for a total of %i, so the last challenge was not correct' % total_dice_qty)
-            if isinstance(ending_announce, BluffAnnounce):
-                input('  %s lost a dice      (press any key to continue)' % round_history[-1][0])
-            else:
-                input('  %s earned a dice      (press any key to continue)' % round_history[-1][0])
+            input('  %s lost a dice      (press any key to continue)' % round_history[-1][0])
+            # if isinstance(ending_announce, BluffAnnounce):
+            #     input('  %s lost a dice      (press any key to continue)' % round_history[-1][0])
+            # else:
+            #     input('  %s earned a dice      (press any key to continue)' % round_history[-1][0])
 
 
 def main():
